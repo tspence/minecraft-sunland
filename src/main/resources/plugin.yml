@@ -1,0 +1,15 @@
+name: Sunland
+main: net.spence.minecraft.sunland.Sunland
+version: 1.0
+
+commands:
+   basic:
+      description: This is a demo command.
+      usage: /<command> [player]
+   basic2:
+      description: This is a demo (2) command.
+      usage: /<command> [player]
+   skeleton:
+      description: Summon a skeleton in front of you.
+      usage: /<command>
+      
