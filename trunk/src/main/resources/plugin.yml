@@ -5,11 +5,14 @@ version: 1.0
 commands:
    basic:
       description: This is a demo command.
-      usage: /<command> [player]
-   basic2:
-      description: This is a demo (2) command.
-      usage: /<command> [player]
+      usage: /basic
+   maze:
+      description: Generates a maze for the player
+      usage: /maze
+   mazeclear:
+      description: Clears out a maze that was already built
+      usage: /mazeclear
    skeleton:
       description: Summon a skeleton in front of you.
-      usage: /<command>
+      usage: /skeleton
       
