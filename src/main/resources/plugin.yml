@@ -9,10 +9,13 @@ commands:
    maze:
       description: Generates a maze for the player
       usage: /maze
-   mazeclear:
-      description: Clears out a maze that was already built
-      usage: /mazeclear
+   shop:
+      description: Configure a shop
+      usage: /shop
    skeleton:
       description: Summon a skeleton in front of you.
       usage: /skeleton
+   coins:
+      description: Create coins for use in the shops.
+      usage: /coins <amount>
       

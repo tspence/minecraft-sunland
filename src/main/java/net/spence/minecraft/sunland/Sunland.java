@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Sunland extends JavaPlugin
@@ -19,6 +20,9 @@ public final class Sunland extends JavaPlugin
         for (int i = 0; i < coll.length; i++) {
             SunlandHelp.SendHelp(coll[i]);
         }
+        
+        // Register to listen for player interact events
+        getServer().getPluginManager().registerEvents(new SunlandListener(), this);
     }
 
     @Override
@@ -30,65 +34,56 @@ public final class Sunland extends JavaPlugin
         }
         getLogger().info("Closed net.spence.minecraft.Sunland");
     }
-
+    
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label,
             String[] args)
     {
-        // Basic command
-        if (cmd.getName().equalsIgnoreCase("basic")) { 
-            Player player = (Player) sender;
+        // Check to ensure this is a player
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("This command can only be run by a player.");
+            return false;
+        }
+        
+        // Who is this player and where is he/she?
+        Player player = (Player) sender;
+        Location loc = player.getLocation();
 
-            // Figure out theplayer's location
-            Location loc = player.getLocation();
-            
-            // Build a diamond block 5 spaces ahead of size 3
-            loc.setZ(loc.getZ() + 5);
+        // Basic command
+        if (cmd.getName().equalsIgnoreCase("basic")) {
+            Sun.Forward(loc, 5);
             Builder.generateCube(loc, 3, Material.DIAMOND_BLOCK);
             
         // Skeleton command
         } else if (cmd.getName().equalsIgnoreCase("skeleton")) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage("This command can only be run by a player.");
-            } else {
-                Player player = (Player) sender;
-
-                // Figure out theplayer's location
-                Location loc = player.getLocation();
                 
-                // Spawn a skeleton five spaces ahead
-                loc.setZ(loc.getZ() + 5);
-                player.getWorld().spawnEntity(loc, EntityType.SKELETON);
-            }
+            // Spawn a skeleton five spaces ahead
+            Sun.Forward(loc, 5);
+            player.getWorld().spawnEntity(loc, EntityType.SKELETON);
             return true;
             
         // Maze command
         } else if (cmd.getName().equalsIgnoreCase("maze")) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage("This command can only be run by a player.");
-            } else {
-                Player player = (Player) sender;
 
-                // Figure out theplayer's location
-                Location loc = player.getLocation();
-                
-                // Spawn a skeleton five spaces ahead
-                Builder.generateMaze(loc, 8);
-            }
+            // Build a maze of a specific x/y dimension, ahead 25 blocks 
+            Sun.Forward(loc, 25);
+            Builder.generateMaze(loc, 8);
             return true;
             
-        // Mazeclear command
-        } else if (cmd.getName().equalsIgnoreCase("mazeclear")) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage("This command can only be run by a player.");
+        // Test for a shop mod
+        } else if (cmd.getName().equalsIgnoreCase("shop")) {
+            SunflowerShop ss = ShopSystem.GetShop(player);
+            ss.Interact(player);
+            return true;
+            
+        // Give some coins for shop playing
+        } else if (cmd.getName().equalsIgnoreCase("coins") || cmd.getName().equalsIgnoreCase("coin")) {
+            if (args.length == 1) {
+                int amount = Integer.parseInt(args[0]);
+                Sun.GiveMoney(player, amount);
+                player.sendMessage("Gained " + Integer.toString(amount) + " coins.");
             } else {
-                Player player = (Player) sender;
-
-                // Figure out theplayer's location
-                Location loc = player.getLocation();
-                
-                // Spawn a skeleton five spaces ahead
-                Builder.BuildSurface(loc.getWorld(), loc.getBlockX() - 20, loc.getBlockY() - 1, loc.getBlockZ() - 20, loc.getBlockX() + 20, loc.getBlockY() + 4, loc.getBlockZ() + 20, Material.AIR);
+                player.sendMessage("Usage: /coins <amount>");
             }
             return true;
         }
