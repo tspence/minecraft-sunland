@@ -1,0 +1,1 @@
+A project to experiment with creating a Bukkit server for some Minecraft server side code.
